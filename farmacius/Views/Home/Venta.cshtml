@@ -1,0 +1,74 @@
+﻿@model farmacius.Models.SaleViewModel
+
+@{
+    ViewData["Title"] = "Venta de Producto";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <h3>Productos Disponibles</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.vProducts)
+                {
+                    <tr>
+                        <td><img src="@product.ImageUrl" alt="Imagen de @product.Name" style="width: 50px; height: auto;" /></td>
+                        <td>@product.Name</td>
+                        <td>@product.Description</td>
+                        <td>@product.Price</td>
+                        <td>
+                            <form asp-action="AddToCart" method="post">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <button type="submit" class="btn btn-primary" @(product.Quantity <= 0 ? "disabled" : "")>Agregar al Carrito</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h3>Carrito de Compras</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Cart)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price</td>
+                        <td>@item.TotalPrice</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <h4>Total: @Model.TotalPrice</h4>
+        <form asp-action="ClearCart" method="post">
+            <button type="submit" class="btn btn-danger">Cancelar</button>
+        </form>
+        <button type="button" class="btn btn-success" onclick="location.href='/Payment/Index'">Continuar al Pago</button>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

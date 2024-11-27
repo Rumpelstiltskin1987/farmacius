@@ -1,0 +1,46 @@
+﻿@model farmacius.Models.Login
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="text-center"> <h1 class="display-4">Inicio de Sesión</h1> </div>
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <form asp-action="Privacy">
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div><br />
+            <table>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        </div>
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <label class="text-danger">¿Olvidaste tu contraseña?</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label asp-for="RememberMe"> <input asp-for="RememberMe" /> Recordarme</label>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
