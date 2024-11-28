@@ -1,0 +1,65 @@
+﻿@model farmacius.Models.Login
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="text-center"> <h1 class="display-4">Inicio de Sesión</h1> </div>
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <form asp-action="Products">
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div><br />
+            <table>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        </div>
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <label class="text-danger">¿Olvidaste tu contraseña?</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label asp-for="RememberMe"> <input asp-for="RememberMe" /> Recordarme</label>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        // Código JavaScript para ocultar el menú en la vista de Login
+        document.addEventListener('DOMContentLoaded', function () {
+            if (currentView === "Login") {
+                var inicio = document.getElementById('inicio');
+                var alta = document.getElementById('alta');
+                var venta = document.getElementById('venta');
+                var main = document.getElementById('main');
+                if (menu) {
+                    alta.style.display = 'none';
+                    venta.style.display = 'none';
+                    main.style.display = 'none';
+                }
+            }
+        });
+    </script>
+}

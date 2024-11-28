@@ -9,5 +9,6 @@ namespace farmacius.Models
         [Required(ErrorMessage = "La contraseña es obligatoria.")][DataType(DataType.Password)]
         public string Password { get; set; }
         [Display(Name = "Recordarme")] public bool RememberMe { get; set; }
+        public bool logued { get; set; }
     }
 }

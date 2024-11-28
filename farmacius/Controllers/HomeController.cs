@@ -1,18 +1,21 @@
 using farmacius.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace farmacius.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private static List<vProduct> productsV = new List<vProduct>
+
+        private static List<Product> productsV = new List<Product>
         {
-            new vProduct { Id = 1, Name = "Paracetamol", Description = "Paracetamol", Price = 10.00m, Quantity = 10, ImageUrl="/images/paracetamol.jpg" },
-            new vProduct { Id = 2, Name = "Loratadina", Description = "Loratadina 2", Price = 20.00m, Quantity = 5, ImageUrl="/images/loratadina.jpg" },
-            new vProduct { Id = 3, Name = "Desloratadina", Description = "Desloratadina 2", Price = 15.00m, Quantity = 5, ImageUrl="/images/desloratadina.jpg" },
-            new vProduct { Id = 4, Name = "Ibuprofeno", Description = "Ibuprofeno 2", Price = 18.00m, Quantity = 5, ImageUrl="/images/ibuprofeno.jpg" }
+            new Product { Id = 1, Name = "Paracetamol", Description = "Paracetamol", Price = 10.00m, Quantity = 10, ImageUrl="/images/paracetamol.jpg" },
+            new Product { Id = 2, Name = "Loratadina", Description = "Loratadina 2", Price = 20.00m, Quantity = 5, ImageUrl="/images/loratadina.jpg" },
+            new Product { Id = 3, Name = "Desloratadina", Description = "Desloratadina 2", Price = 15.00m, Quantity = 5, ImageUrl="/images/desloratadina.jpg" },
+            new Product { Id = 4, Name = "Ibuprofeno", Description = "Ibuprofeno 2", Price = 18.00m, Quantity = 5, ImageUrl="/images/ibuprofeno.jpg" }
         };
 
         private static List<CartItem> cart = new List<CartItem>();
@@ -24,14 +27,37 @@ namespace farmacius.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("Login");
         }
 
-        public IActionResult Privacy()
+        public IActionResult Products(Login model) {
+
+            if (ModelState.IsValid)
+            {
+                ProductViewModel products = new ProductViewModel();
+
+                products.Products = productsV;
+
+                return View("Index", products);
+            }
+            else
+            {
+                return View("Login");
+            }
+        }
+
+        public IActionResult ProductList(Login model)
+        {
+            ProductViewModel products = new ProductViewModel();
+
+            products.Products = productsV;
+
+            return View("Index", products);
+        }
+
+        public IActionResult Alta()
         {
             Models.ProductViewModel products = new Models.ProductViewModel();
-            //products.Products = new List<Models.Product>();
-
             return View(products);
         }
 
@@ -98,6 +124,6 @@ namespace farmacius.Controllers
 
 
 
-        
 
-        
+
+
