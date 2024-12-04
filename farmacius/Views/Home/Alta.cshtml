@@ -1,4 +1,4 @@
-﻿@model farmacius.Models.ProductViewModel
+﻿@model farmacius.Models.Product
 
 @{
     ViewData["Title"] = "Alta de Producto";
@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="Create">
+        <form asp-action="AddProduct">
             <div class="form-group">
                 <label asp-for="Name" class="control-label">Nombre</label>
                 <input asp-for="Name" class="form-control" />
@@ -34,29 +34,6 @@
         </form>
     </div>
 </div>
-
-@* <h3>Productos Existentes</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var product in Model.Products)
-        {
-            <tr>
-                <td>@product.Name</td>
-                <td>@product.Description</td>
-                <td>@product.Price</td>
-                <td>@product.Quantity</td>
-            </tr>
-        }
-    </tbody>
-</table> *@
 
 @section Scripts {
     @{

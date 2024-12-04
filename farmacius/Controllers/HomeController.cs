@@ -1,64 +1,116 @@
 using farmacius.Models;
+using farmacius.Logic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using farmacius.DataBase;
+using SQLitePCL;
+using System.Linq;
 
 namespace farmacius.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        private static List<Product> productsV = new List<Product>
-        {
-            new Product { Id = 1, Name = "Paracetamol", Description = "Paracetamol", Price = 10.00m, Quantity = 10, ImageUrl="/images/paracetamol.jpg" },
-            new Product { Id = 2, Name = "Loratadina", Description = "Loratadina 2", Price = 20.00m, Quantity = 5, ImageUrl="/images/loratadina.jpg" },
-            new Product { Id = 3, Name = "Desloratadina", Description = "Desloratadina 2", Price = 15.00m, Quantity = 5, ImageUrl="/images/desloratadina.jpg" },
-            new Product { Id = 4, Name = "Ibuprofeno", Description = "Ibuprofeno 2", Price = 18.00m, Quantity = 5, ImageUrl="/images/ibuprofeno.jpg" }
-        };
-
+        private readonly FarmaciusContext _context;
+        private static List<Product> products = new List<Product>();
         private static List<CartItem> cart = new List<CartItem>();
 
-        public HomeController(ILogger<HomeController> logger)
+        private UserLogic userLogic = new UserLogic();
+
+        public HomeController(ILogger<HomeController> logger, FarmaciusContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Login()
         {
-            return View("Login");
+            return View();
         }
 
-        public IActionResult Products(Login model) {
-
+        public IActionResult Index(Login model)
+        {
             if (ModelState.IsValid)
             {
-                ProductViewModel products = new ProductViewModel();
+                var user = _context.Users.SingleOrDefault(u => u.Email == model.Email && u.Password == model.Password);
 
-                products.Products = productsV;
+                if (user != null)
+                {
+                    ProductList productList = new ProductList();
 
-                return View("Index", products);
+                    productList.Products = _context.Products
+                        .Select(p => new Product
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Description = p.Description != null ? p.Description : string.Empty, 
+                            Price = p.Price,
+                            Quantity = p.Quantity,
+                            ImageUrl = p.ImageUrl != null ? p.ImageUrl : string.Empty 
+                        }).ToList();
+
+                    return View("Index", productList);
+
+                }
+                else
+                {
+                    ViewBag.Error = "Usuario o contraseña incorrectos";
+                    return RedirectToAction("Login");
+                }
             }
             else
             {
-                return View("Login");
+                return RedirectToAction("Login");
             }
         }
 
         public IActionResult ProductList(Login model)
         {
-            ProductViewModel products = new ProductViewModel();
+            ProductList productList = new ProductList();
 
-            products.Products = productsV;
+            productList.Products = _context.Products
+                        .Select(p => new Product
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Description = p.Description != null ? p.Description : string.Empty,
+                            Price = p.Price,
+                            Quantity = p.Quantity,
+                            ImageUrl = p.ImageUrl != null ? p.ImageUrl : string.Empty
+                        }).ToList();
 
-            return View("Index", products);
+            return View("Index", productList);
         }
 
+        [HttpGet]
         public IActionResult Alta()
         {
-            Models.ProductViewModel products = new Models.ProductViewModel();
-            return View(products);
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddProduct(Product model)
+        {
+
+            _context.Products.Add(model);
+            _context.SaveChanges();
+
+            ProductList productList = new ProductList();
+
+            productList.Products = _context.Products
+                        .Select(p => new Product
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Description = p.Description != null ? p.Description : string.Empty,
+                            Price = p.Price,
+                            Quantity = p.Quantity,
+                            ImageUrl = p.ImageUrl != null ? p.ImageUrl : string.Empty
+                        }).ToList();
+
+            return View("Index", productList);
         }
 
         #region Venta
@@ -66,9 +118,19 @@ namespace farmacius.Controllers
         [HttpGet]
         public IActionResult Venta()
         {
+            products = _context.Products.Select(p => new Product
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description != null ? p.Description : string.Empty,
+                Price = p.Price,
+                Quantity = p.Quantity,
+                ImageUrl = p.ImageUrl != null ? p.ImageUrl : string.Empty
+            }).ToList();
+
             var model = new SaleViewModel
             {
-                vProducts = productsV,
+                vProducts = products,
                 Cart = cart,
                 TotalPrice = cart.Sum(item => item.TotalPrice)
             };
@@ -78,7 +140,7 @@ namespace farmacius.Controllers
         [HttpPost]
         public IActionResult AddToCart(int productId)
         {
-            var product = productsV.FirstOrDefault(p => p.Id == productId);
+            var product = products.FirstOrDefault(p => p.Id == productId);
             if (product != null && product.Quantity > 0)
             {
                 var cartItem = cart.FirstOrDefault(c => c.ProductId == productId);
@@ -121,9 +183,3 @@ namespace farmacius.Controllers
         }
     }
 }
-
-
-
-
-
-

@@ -1,7 +1,14 @@
+using farmacius.DataBase;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register the DbContext with the dependency injection container
+builder.Services.AddDbContext<FarmaciusContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("MySQLiteContext")));
 
 var app = builder.Build();
 
@@ -22,6 +29,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Login}/{id?}");
 
 app.Run();
+

@@ -1,4 +1,4 @@
-﻿@model farmacius.Models.ProductViewModel
+﻿@model farmacius.Models.ProductList
 
 @{
     ViewData["Title"] = "Productos Existentes";
@@ -24,6 +24,9 @@
                 <td>@product.Description</td>
                 <td>@product.Price</td>
                 <td>@product.Quantity</td>
+                <td>
+                    <a asp-action="EditProduct" class="btn btn-primary" asp-route-id="@product.Id">Editar</a>
+                </td>
             </tr>
         }
     </tbody>
